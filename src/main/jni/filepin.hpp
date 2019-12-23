@@ -18,8 +18,9 @@ protected:
   void onHandle(Action act, list<path> files);
   Action scanAction();
   unsigned scanCount();
-  void skipWs();
-  void scanSubjectFiles();
+  unsigned scanWs();
+  void scanSubjectFiles(unsigned n);
+  /** NOTE this scanner will accept empty text */
   path scanPath();
 public:
   ProtocolScanner();

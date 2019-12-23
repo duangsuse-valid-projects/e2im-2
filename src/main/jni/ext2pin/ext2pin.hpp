@@ -7,7 +7,19 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 
-#include "aux_ext2pin.hpp"
+////
+#if __WORDSIZE == 64
+#define MIs64Bit
+#endif
+
+#define protecting(var, body) \
+  auto old##var = (var); \
+  (body); (var) = old##var;
+
+template <typename T>
+void *voidPtr(T v) { return static_cast<void *>(v); }
+
+typedef const char *CString;
 
 ////
 typedef int FileId;
@@ -21,7 +33,7 @@ const FsAttrs ATTR_I = 0x00000010; /**< Ext2fs __Immutable__ file attribute. */
 
 ////
 enum FailableFileId: FileId
-  { OpenFail = (-1), StatFail = (-2), NotSupported = (-3) };
+  { /*for non-permitted*/OpenFail = (-1), /*for non-exists*/StatFail = (-2), /* /dev/null special files */NotSupported = (-3) };
 static inline void closeSilently(FileId fd)
   { protecting(errno, close(fd)); }
 static inline bool notNormalFile(FileState s)

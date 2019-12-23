@@ -7,7 +7,7 @@ for (auto \
   (name) = (list).begin(), \
      end = (list).end();   \
   (name) != end; ++(name))
-#define unsupported exit(1)
+#define unsupported { printf("Illegal state %s:%i\n", __FILE__, __LINE__); exit(1); }
 
 class Scanner {
 private:

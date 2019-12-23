@@ -2,14 +2,15 @@
 
 int main() {
   ProtocolScanner &scan = *new ProtocolScanner();
-  while (true) scan.handleNext();
+  while (true) 
+    { scan.handleNext(); printf("\n"); }
   return 0;
 }
 
 ProtocolScanner::ProtocolScanner(): Scanner(stdin) {}
 
 using Action = ProtocolScanner::Action;
-#define check(res) if (res != 0) { printf("!%i", res); continue; }
+#define check(res) if (res != 0) { printf("!%i", abs(res)); continue; }
 void ProtocolScanner::onHandle(Action act, list<path> files) {
   switch (act) {
     case Action::Query:
@@ -27,7 +28,7 @@ void ProtocolScanner::onHandle(Action act, list<path> files) {
             check(res)
             addFlag(attr, ATTR_I);
             res = setFileAttr(file->c_str(), attr);
-            check(res)
+            check(res) else printf(".");
         }
         break;
     case Action::Unpin:
@@ -37,7 +38,7 @@ void ProtocolScanner::onHandle(Action act, list<path> files) {
             check(res)
             subFlag(attr, ATTR_I);
             res = setFileAttr(file->c_str(), attr);
-            check(res)
+            check(res) else printf(".");
         }
         break;
   }
@@ -46,10 +47,15 @@ void ProtocolScanner::onHandle(Action act, list<path> files) {
 void ProtocolScanner::handleNext() {
   Action act = scanAction();
   unsigned count = scanCount();
-  skipWs();
-  scanSubjectFiles();
+  if (count == 0) unsupported;
+  unsigned wss = scanWs();
+  if (wss == 0) unsupported;
+
+  scanSubjectFiles(count);
   onHandle(act, subject);
   subject.clear();
+  if (peek == '\n') consume();
+  else unsupported;
 }
 ProtocolScanner::Action ProtocolScanner::scanAction() {
   switch (peek) {
@@ -62,13 +68,16 @@ ProtocolScanner::Action ProtocolScanner::scanAction() {
 unsigned int ProtocolScanner::scanCount() {
   unsigned n = 0;
   while (peek>='0' && peek<='9')
-    n = n*10 + peek-'0';
+    n = n*10 + consume()-'0';
   return n;
 }
 bool isWs(char c) { return c==' ' || c=='\n'; }
-void ProtocolScanner::skipWs() {
-  while (isWs(peek)) consume();
+unsigned ProtocolScanner::scanWs() {
+  unsigned count = 0;
+  while (isWs(peek)) { consume(); ++count; }
+  return count;
 }
+
 path ProtocolScanner::scanPath() {
   path currentPath("");
   while (!isWs(peek)) {
@@ -77,8 +86,8 @@ path ProtocolScanner::scanPath() {
   }
   return currentPath;
 }
-void ProtocolScanner::scanSubjectFiles() {
-  while (peek != '\n') {
+void ProtocolScanner::scanSubjectFiles(unsigned n) {
+  for (; n!=0; --n) {
     subject.push_back(scanPath());
     while (peek == ' ') consume();
   }
