@@ -26,14 +26,13 @@ android { compileSdkVersion 28
     minSdkVersion 9
     versionCode 5; versionName "2.0"
   }
-
-  sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-  }
   externalNativeBuild {
     ndkBuild { path "src/main/jni/Ext2Pin.mk" }
   }
 
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
