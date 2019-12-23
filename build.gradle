@@ -8,13 +8,15 @@ buildscript {
   dependencies {
     classpath("com.android.tools.build:gradle:$abtVersion")
     classpath("$kotlin-gradle-plugin:$kotlinVersion")
+    classpath('com.github.dcendents:android-maven-gradle-plugin:2.1')
   }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
 
 ////
-group = 'org.duangsuse'
+group = 'com.github.duangsuse'
 
 repositories { jcenter(); google() }
 dependencies {
