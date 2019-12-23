@@ -16,8 +16,7 @@ interface ArrayFlags<T> {
   @Throws(Fail::class)
   fun unsetFlags(vararg item: T)
   data class Fail(val position: Cnt, val errno: Ordinal, val newState: Boolean?):
-    Error("Failed at item #$position (err $errno)${newState.prefixElvis("→ ")}") {
-  }
+    Error("Failed at item #$position (err $errno)${newState.prefixElvis("→ ")}")
 }
 
 private fun <T: Any> T?.prefixElvis(prefix: String): String = this?.let { prefix+it } ?: ""

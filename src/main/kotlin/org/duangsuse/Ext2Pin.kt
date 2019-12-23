@@ -6,7 +6,8 @@ import android.os.Build
 import java.io.File.separator as sep
 import java.io.PrintStream
 
-interface FilePin: ArrayFlags<Path>
+interface PathPin: ArrayFlags<Path>
+
 private val whitespaceEscape = mapOf(' ' to ' ', '\n' to '\n')
 private fun String.escape(translate: Map<Char, Char>, escapeChar: Char = '\\'): String = fold(StringBuilder())
   { sb: StringBuilder, c: Char -> if (c in translate) sb.append(escapeChar).append(translate[c]) else sb.append(c) }.toString()
@@ -44,16 +45,28 @@ private fun String.escape(translate: Map<Char, Char>, escapeChar: Char = '\\'): 
  * + `'f'` immutable flag unset
  * + `'!' errorDigit` fail
  */
-class Ext2Pin(subProcess: Process): FilePin {
-  constructor(ctx: Context): this(ProcessBuilder(*commandSudo, pinnerPath(ctx)).start())
+class Ext2Pin(private val subProcess: Process): PathPin, java.io.Closeable {
+  constructor(execPath: Path): this(ProcessBuilder(*commandSudo, execPath).start())
+  constructor(ctx: Context): this(pinnerPath(ctx))
 
   private val subIn = subProcess.outputStream.let(::PrintStream)
   private val subOut = subProcess.inputStream.let(::AsciiInput)
+
+  override fun close() { subProcess.destroy() }
 
   override fun checkFlags(vararg item: Path): BooleanArray {
     writeOperation(Action.Query, item)
     return handleFlagCheckOut(item.size)
   }
+  override fun setFlags(vararg item: Path) {
+    writeOperation(Action.Set, item)
+    handleFlagChangeOut(item.size, true)
+  }
+  override fun unsetFlags(vararg item: Path) {
+    writeOperation(Action.Unset, item)
+    handleFlagChangeOut(item.size, false)
+  }
+
   private fun handleFlagCheckOut(n: Cnt): BooleanArray {
     val flags = BooleanArray(n)
     readNextRes@ for (pos in 0 until n) {
@@ -66,15 +79,6 @@ class Ext2Pin(subProcess: Process): FilePin {
       }
     }
     return flags
-  }
-
-  override fun setFlags(vararg item: Path) {
-    writeOperation(Action.Set, item)
-    handleFlagChangeOut(item.size, true)
-  }
-  override fun unsetFlags(vararg item: Path) {
-    writeOperation(Action.Unset, item)
-    handleFlagChangeOut(item.size, false)
   }
   private fun handleFlagChangeOut(n: Cnt, new_state: Boolean) {
     readNextRes@ for (pos in 0 until n) {
@@ -94,7 +98,6 @@ class Ext2Pin(subProcess: Process): FilePin {
     fun writeWs() { subIn.print(' ') }
     fun writeFiles(files: Array<out Path>)
       { subIn.print(files.joinToString(" ") { it.escape(whitespaceEscape) }) }
-
     writeAction(action)
     writeCount(items.size)
     writeWs()
