@@ -44,7 +44,7 @@ private fun String.escape(translate: Map<Char, Char>, escapeChar: Char = '\\'): 
  * + `'f'` immutable flag unset
  * + `'!' errorDigit` fail
  */
-class Ext2Pinner(subProcess: Process): FilePin {
+class Ext2Pin(subProcess: Process): FilePin {
   constructor(ctx: Context): this(ProcessBuilder(*commandSudo, pinnerPath(ctx)).start())
 
   private val subIn = subProcess.outputStream.let(::PrintStream)

@@ -31,7 +31,7 @@ android { compileSdkVersion 28
     main.java.srcDirs += 'src/main/kotlin'
   }
   externalNativeBuild {
-    ndkBuild { path "src/main/jni/Ext2Pinner.mk" }
+    ndkBuild { path "src/main/jni/Ext2Pin.mk" }
   }
 
   compileOptions {
