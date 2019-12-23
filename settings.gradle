@@ -1,1 +1,2 @@
-rootProject.name = 'e2im2'
+rootProject.name = 'changeattr'
+include ':e2im2'

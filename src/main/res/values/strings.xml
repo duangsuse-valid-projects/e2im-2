@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ChangeAttr</string>
+    <string name="file_path">File Path: </string>
+    <string name="mode">File Mode: </string>
+    <string name="add_i">Make Immutable</string>
+    <string name="sub_i">Make Mutable</string>
+    <string name="loading">Loading…</string>
+    <string name="mode_bad_path">Bad File Path</string>
+    <string name="unchanged">Unchanged</string>
+</resources>

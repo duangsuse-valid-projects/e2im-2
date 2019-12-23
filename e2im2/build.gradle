@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+
+////
+group = 'com.github.duangsuse'
+
+dependencies {
+  implementation("$kotlin-stdlib-jdk8:$kotlinVersion")
+}
+
+android { compileSdkVersion 28
+  defaultConfig {
+    minSdkVersion(9)
+    versionCode(5); versionName("2.0")
+  }
+  externalNativeBuild {
+    ndkBuild { path "src/main/jni/Ext2Pin.mk" }
+  }
+
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}

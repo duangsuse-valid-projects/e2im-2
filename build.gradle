@@ -11,35 +11,28 @@ buildscript {
     classpath('com.github.dcendents:android-maven-gradle-plugin:2.1')
   }
 }
+allprojects {
+  repositories { jcenter(); google() }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
-
-////
-group = 'com.github.duangsuse'
-
-repositories { jcenter(); google() }
-dependencies {
-  implementation("$kotlin-stdlib-jdk8:$kotlinVersion")
-}
 
 android { compileSdkVersion 28
   defaultConfig {
-    minSdkVersion 9
-    versionCode 5; versionName "2.0"
+    applicationId('org.duangsuse.changeattr')
+    minSdkVersion(14); targetSdkVersion(17)
+    versionCode(1); versionName("1.0")
+    ndk { abiFilters('armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64') }
   }
-  externalNativeBuild {
-    ndkBuild { path "src/main/jni/Ext2Pin.mk" }
+  buildTypes {
+    release {
+      minifyEnabled(true)
+      proguardFiles getDefaultProguardFile('proguard-android.txt')
+    }
   }
+}
 
-  sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-  kotlinOptions {
-    jvmTarget = "1.8"
-  }
+dependencies {
+  compile(project(':e2im2'))
 }
