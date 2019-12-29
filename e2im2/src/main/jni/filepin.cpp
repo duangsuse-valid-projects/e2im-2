@@ -3,7 +3,7 @@
 int main() {
   ProtocolScanner &scan = *new ProtocolScanner();
   while (true) 
-    { scan.handleNext(); printf("\n"); }
+    { scan.handleNext(); }
   return 0;
 }
 

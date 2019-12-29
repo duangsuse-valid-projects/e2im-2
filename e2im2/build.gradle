@@ -6,7 +6,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.duangsuse'
 
 dependencies {
-  implementation("$kotlin-stdlib-jdk8:$kotlinVersion")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
 }
 
 android { compileSdkVersion 28
